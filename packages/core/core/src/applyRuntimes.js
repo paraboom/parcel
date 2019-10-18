@@ -2,7 +2,7 @@
 
 import type {Dependency} from '@parcel/types';
 import type {
-  AssetRequest,
+  AssetRequestDesc,
   Bundle as InternalBundle,
   NodeId,
   ParcelOptions
@@ -22,7 +22,7 @@ import {setDifference} from '@parcel/utils';
 
 type RuntimeConnection = {|
   bundle: InternalBundle,
-  assetRequest: AssetRequest,
+  assetRequest: AssetRequestDesc,
   dependency: ?Dependency,
   isEntry: ?boolean
 |};
@@ -79,7 +79,6 @@ export default async function applyRuntimes({
 
   // merge the transformed asset into the bundle's graph, and connect
   // the node to it.
-  // $FlowFixMe
   bundleGraph._graph.merge(runtimesGraph);
 
   for (let {bundle, assetRequest, dependency, isEntry} of connections) {
