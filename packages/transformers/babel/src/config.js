@@ -70,8 +70,6 @@ export async function load(config: Config, options: PluginOptions) {
     }
 
     if (canBeRehydrated) {
-      prepForReyhdration(partialConfig.options);
-      config.shouldRehydrate();
       config.setResult({
         internal: false,
         config: partialConfig.options,
@@ -84,7 +82,6 @@ export async function load(config: Config, options: PluginOptions) {
       logger.warn(
         'WARNING: You are using `require` to configure Babel plugins or presets. This means Babel transformations cannot be cached and will run on each build. Please use strings to configure Babel instead.'
       );
-      config.shouldReload();
       config.setResult({
         internal: false
       });
@@ -125,8 +122,6 @@ async function buildDefaultBabelConfig(config: Config) {
         dirname: BABEL_TRANSFORMER_DIR
       })
     );
-    config.shouldRehydrate();
-    prepForReyhdration(babelOptions);
   }
 
   config.setResult({
@@ -188,10 +183,12 @@ function isLocal(/* configItemPath */) {
   return false;
 }
 
-function prepForReyhdration(options) {
+export function preSerialize(result) {
+  // UGH the naming
+  let {config} = result.result;
   // ConfigItem.value is a function which the v8 serializer chokes on
   // It is being ommited here and will be rehydrated later using the path provided by ConfigItem.file
-  options.presets = (options.presets || []).map(
+  config.presets = (config.presets || []).map(
     ({options, dirname, name, file}) => ({
       options,
       dirname,
@@ -199,7 +196,7 @@ function prepForReyhdration(options) {
       file
     })
   );
-  options.plugins = (options.plugins || []).map(
+  config.plugins = (config.plugins || []).map(
     ({options, dirname, name, file}) => ({
       options,
       dirname,
@@ -228,7 +225,7 @@ async function definePluginDependencies(config) {
   );
 }
 
-export async function rehydrate(config: Config, options: PluginOptions) {
+export async function postDeserialize(config: Config, options: PluginOptions) {
   let babelCore = config.result.internal
     ? require('@babel/core')
     : await options.packageManager.require('@babel/core', config.searchPath);

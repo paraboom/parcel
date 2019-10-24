@@ -419,10 +419,14 @@ export type Transformer = {|
     config: Config,
     options: PluginOptions
   |}) => Async<void>,
-  rehydrateConfig?: ({|
+  preSerializeConfig?: ({|
     config: Config,
     options: PluginOptions
   |}) => Async<void>,
+  postDeserializeConfig?: {|
+    config: Config,
+    options: PluginOptions
+  |},
   canReuseAST?: ({|
     ast: AST,
     options: PluginOptions
