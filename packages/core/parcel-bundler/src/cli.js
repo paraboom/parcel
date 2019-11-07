@@ -51,7 +51,6 @@ program
   .option('--no-cache', 'disable the filesystem cache')
   .option('--no-source-maps', 'disable sourcemaps')
   .option('--no-autoinstall', 'disable autoinstall')
-  .option('--no-peer-dependencies', 'disable bundling of peer dependencies')
   .option(
     '-t, --target [target]',
     'set the runtime environment, either "node", "browser" or "electron". defaults to "browser"',
@@ -102,7 +101,6 @@ program
   .option('--no-cache', 'disable the filesystem cache')
   .option('--no-source-maps', 'disable sourcemaps')
   .option('--no-autoinstall', 'disable autoinstall')
-  .option('--no-peer-dependencies', 'disable bundling of peer dependencies')
   .option(
     '-t, --target [target]',
     'set the runtime environment, either "node", "browser" or "electron". defaults to "browser"',
@@ -140,7 +138,6 @@ program
   .option('--no-cache', 'disable the filesystem cache')
   .option('--no-source-maps', 'disable sourcemaps')
   .option('--no-autoinstall', 'disable autoinstall')
-  .option('--no-peer-dependencies', 'disable bundling of peer dependencies')
   .option('--no-content-hash', 'disable content hashing')
   .option(
     '--experimental-scope-hoisting',

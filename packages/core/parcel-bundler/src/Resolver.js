@@ -95,6 +95,33 @@ class Resolver {
       };
     }
 
+    // Resolve peer dependencies
+    // Finds the first package that does not specify filename as a peer dependency
+    // and resolve from there. If there was no package, or all packages specified
+    // filename as a dependency, the module is marked as external
+    let pkg = await this.findPackage(dir);
+    let externalPeerDependency = false;
+    while (pkg) {
+      let isPeerDependency = false;
+      let hasPeerDependencies = pkg.peerDependencies != undefined;
+      if (hasPeerDependencies) {
+        isPeerDependency = Object.keys(pkg.peerDependencies).includes(filename);
+      }
+
+      externalPeerDependency = isPeerDependency;
+
+      let insideNodeModules = dir.includes('node_modules');
+      if (!isPeerDependency || !insideNodeModules) {
+        break;
+      }
+
+      dir = path.dirname(pkg.pkgdir);
+      dir = path.basename(dir) === 'node_modules' ? path.dirname(dir) : dir;
+      pkg = await this.findPackage(dir);
+    }
+
+    if (externalPeerDependency) return null;
+
     // Resolve the module in node_modules
     let resolved;
     try {
@@ -179,22 +206,6 @@ class Resolver {
       // Skip node_modules directories
       if (path.basename(dir) === 'node_modules') {
         dir = path.dirname(dir);
-      }
-
-      // Skip package directory for dependencies in peerDependencies
-      if (this.options.peerDependencies == false) {
-        try {
-          let pkg = await this.readPackage(dir);
-          if (pkg && pkg.peerDependencies) {
-            let peerDependencies = Object.keys(pkg.peerDependencies);
-            if (peerDependencies.includes(parts[0])) {
-              dir = path.dirname(dir);
-              continue;
-            }
-          }
-        } catch (err) {
-          // ignore
-        }
       }
 
       try {
