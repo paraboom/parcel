@@ -182,7 +182,7 @@ class NodeResolver {
     // Resolve peer dependencies
     // Finds the first package that does not specify filename as a peer dependency
     // and resolve from there. If there was no package, or all packages specified
-    // filename as a dependency, the module is marked as external
+    // filename as a peer dependency, the module is marked as external
     let pkg = await this.findPackage(dir);
     let externalPeerDependency = false;
     while (pkg) {
