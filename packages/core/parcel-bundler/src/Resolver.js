@@ -58,8 +58,11 @@ class Resolver {
 
     // Resolve the module directory or local file path
     let module = await this.resolveModule(filename, parent);
-    let resolved;
+    if (module == null) {
+      return null;
+    }
 
+    let resolved;
     if (module.moduleDir) {
       resolved = await this.loadNodeModules(module, extensions);
     } else if (module.filePath) {

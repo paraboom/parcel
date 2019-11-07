@@ -365,6 +365,26 @@ describe('javascript', function() {
     assert.equal(await output(), 3);
   });
 
+  it('should correctly leave peer dependencies as external', async function() {
+    let b = await bundle(
+      path.join(__dirname, '/integration/peer-dependency-external/index.js')
+    );
+
+    assertBundleTree(b, {
+      name: 'index.js',
+      assets: ['index.js']
+    });
+  });
+
+  it('should correctly resolve peer dependencies inside node modules', async function() {
+    let b = await bundle(
+      path.join(__dirname, '/integration/peer-dependency-node-module/index.js')
+    );
+
+    let output = (await run(b)).default;
+    assert.equal(await output, 'yes');
+  });
+
   it('Should not run parcel over external modules', async function() {
     let b = await bundle(
       path.join(__dirname, '/integration/dynamic-external/index.js'),

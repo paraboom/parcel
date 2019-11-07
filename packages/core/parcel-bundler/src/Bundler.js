@@ -430,8 +430,10 @@ class Bundler extends EventEmitter {
   }
 
   async resolveAsset(name, parent) {
-    let {path} = await this.resolver.resolve(name, parent);
-    return this.getLoadedAsset(path);
+    let resolved = await this.resolver.resolve(name, parent);
+    if (resolved != null) {
+      return this.getLoadedAsset(resolved.path);
+    }
   }
 
   getLoadedAsset(path) {
