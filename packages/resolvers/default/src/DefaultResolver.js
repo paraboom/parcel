@@ -186,16 +186,13 @@ class NodeResolver {
     let pkg = await this.findPackage(dir);
     let externalPeerDependency = false;
     while (pkg) {
-      let isPeerDependency = false;
-      let hasPeerDependencies = pkg.peerDependencies != undefined;
-      if (hasPeerDependencies) {
-        isPeerDependency = Object.keys(pkg.peerDependencies).includes(filename);
+      externalPeerDependency = false;
+      if (pkg.peerDependencies != undefined) {
+        externalPeerDependency = filename in pkg.peerDependencies;
       }
 
-      externalPeerDependency = isPeerDependency;
-
       let insideNodeModules = dir.includes('node_modules');
-      if (!isPeerDependency || !insideNodeModules) {
+      if (!externalPeerDependency || !insideNodeModules) {
         break;
       }
 
