@@ -184,11 +184,12 @@ class NodeResolver {
     // and resolve from there. If there was no package, or all packages specified
     // filename as a peer dependency, the module is marked as external
     let pkg = await this.findPackage(dir);
+    let parts = this.getModuleParts(filename);
     let externalPeerDependency = false;
     while (pkg) {
       externalPeerDependency = false;
       if (pkg.peerDependencies != undefined) {
-        externalPeerDependency = filename in pkg.peerDependencies;
+        externalPeerDependency = parts[0] in pkg.peerDependencies;
       }
 
       let insideNodeModules = dir.includes('node_modules');
@@ -213,7 +214,6 @@ class NodeResolver {
 
     // If we couldn't resolve the node_modules path, just return the module name info
     if (resolved === undefined) {
-      let parts = this.getModuleParts(filename);
       resolved = {
         moduleName: parts[0],
         subPath: parts[1]
